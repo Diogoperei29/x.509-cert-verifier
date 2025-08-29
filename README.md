@@ -49,7 +49,7 @@ openssl version
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/Diogoperei29/X.509-Certificate-Chain-Verifier.git x509-verifier
+    git clone https://github.com/Diogoperei29/x.509-cert-verifier.git x509-verifier
     cd x509-verifier
     ```
 
