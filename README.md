@@ -20,16 +20,17 @@ A small `verifier_app` executable demonstrates usage, and a test suite verifies 
 -   **RAII Wrappers**: Utilizes `std::unique_ptr` with custom deleters for all OpenSSL objects (`X509`, `X509_STORE_CTX`, etc.) to prevent resource leaks.
 -   **Dynamic Trust Store**: Manual, filesystem-based trust-store loading
 -   **CMake Build System**: Plain C++ build with CMake 
--   **Test Suite**: Includes tests for valid, expired, and untrusted certificate chains.
+-   **Test Suite**: Google Test (GTest) framework with test cases covering valid, expired, and untrusted certificate chains
 -   **Certificate creation**: Python script to generate test certificates automatically
 
 ## Prerequisites
 
 To build and run this project, you will need:
  - C++17-capable compiler (GCC 7+, Clang 6+, or MSVC)  
- - CMake 3.15 or newer  
- - OpenSSL development libraries  
+ - CMake 3.16 or newer  
+ - OpenSSL development libraries (system installation)
  - Python 3.7+ and the `cryptography` library (`pip install cryptography`)
+ - nlohmann/json and Google Test (automatically fetched by CMake)
 
 ## Installing on MSYS2/MinGW
 
@@ -54,6 +55,11 @@ openssl version
     ```
 
 2.  **Configure with CMake:**
+    ```bash
+    cmake -S . -B build
+    ```
+    
+    On Windows with MSYS2/MinGW, you may need to specify OpenSSL location:
     ```bash
     cmake -S . -B build -DOPENSSL_ROOT_DIR="C:/msys64/mingw64"
     ```
@@ -126,25 +132,56 @@ Verification Failed: [reason]
 
 ## Running Tests
 
-The project includes a simple test runner to verify its core logic against known good and bad certificates.
+The project uses Google Test framework with test cases covering valid, expired, and untrusted certificate chains.
 
-To run the tests, first ensure you have built the project, then execute:
+**Using CTest:**
+```bash
+cd build
+ctest --output-on-failure
+```
+
+**Run tests directly:**
 ```bash
 ./build/run_tests
 ```
 
-**Expected output:**
+## Project Structure
+
 ```
-***** Starting Certificate Verifier Tests *****
-Running test: Good Certificate Chain... PASSED
-Verification Failed: certificate has expired (10)
-Running test: Expired Certificate Chain... PASSED
-Verification Failed: unable to get local issuer certificate (20)
-Running test: Untrusted Certificate Chain... PASSED
-Cannot open PEM: non_existent_file.pem
-Running test: Non-Existent Certificate File... PASSED
-***** All Tests Passed *****
+X.509-Certificate-Chain-Verifier/
+├── include/
+│   ├── CertVerifier.hpp              # Main certificate verifier class
+│   └── OpenSslWrappers.hpp           # RAII wrappers for OpenSSL types
+├── src/
+│   ├── CertVerifier.cpp              # Core verification logic
+│   ├── CertVerifierError.cpp         # Error handling implementation
+│   └── main.cpp                      # Command-line application
+├── tests/
+│   └── TestVerifier.cpp              # GTest test suite
+├── scripts/
+│   └── generate_test_certs.py        # Certificate generation script
+├── certs/
+│   ├── trust_store/                  # Root CA certificates
+│   └── test_certs/                   # Generated test certificates
+│       ├── good/                     # Valid certificates
+│       ├── bad_expired/              # Expired certificates
+│       └── bad_untrusted/            # Untrusted CA certificates
+└── CMakeLists.txt                    # Build configuration
 ```
+
+## Architecture
+
+### Core Components
+
+- **CertVerifier**: Main class handling certificate verification
+  - Trust store loading from filesystem
+  - Certificate chain verification against trust store
+  - RAII-based resource management
+
+- **OpenSslWrappers**: RAII wrappers for OpenSSL C types
+  - `X509_ptr`, `X509_STORE_ptr`, `X509_STORE_CTX_ptr`, `BIO_ptr`
+  - Automatic resource cleanup
+  - Exception-safe resource management
 
 ## Security Considerations
 

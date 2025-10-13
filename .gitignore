@@ -4,17 +4,69 @@ CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
+CTestTestfile.cmake
+Testing/
+compile_commands.json
+*.ninja
+.ninja_deps
+.ninja_log
 
-# Compiled binaries
+# Compiled binaries and libraries
 *.o
+*.obj
 *.a
+*.lib
 *.so
+*.dll
+*.dylib
+*.exe
 verifier_app
+verifier_app.exe
 run_tests
+run_tests.exe
 
-# Editor/OS files
-.DS_Store
-*.swp
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
 
-# Vscode settings
+# Test artifacts and temporary files
+temp_test_file.txt
+test_results.xml
+*.log
+
+# Generated certificates
+certs/trust_store/
+xerts/test_certs/
+
+# Editor and IDE files
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Documentation build artifacts
+docs/_build/
+docs/.doctrees/
+
+# Backup files
+*.bak
+*.tmp
+*.old
+
+# Test Certificates
+*.pem
+*.key
+*.crt
+*.cer

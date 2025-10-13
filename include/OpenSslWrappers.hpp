@@ -7,7 +7,7 @@
 
 namespace Cert
 {
-   // Free OpenSSLs I/O abstraction (BIOs) with BIO_free_all.
+   // Deleter functor for OpenSSL's I/O abstraction (BIOs) with BIO_free_all.
    struct BioDeleter
    {
       void operator()(BIO* b) const
